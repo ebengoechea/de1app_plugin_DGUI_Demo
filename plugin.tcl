@@ -72,9 +72,12 @@ proc ::plugins::DGUI_Demo::main {} {
 		setup_ui_DSx
 	} elseif { $::settings(skin) eq "Insight" } {
 		setup_ui_Insight
-	} else {
-		message_page [translate "DGUI_Demo only works with the Insight or DSx skins"] [translate Ok]
+	} elseif { $::settings(skin) eq "MimojaCafe" } {
+		setup_ui_MimojaCafe
 	}
+#	elseif {} {
+#		message_page [translate "DGUI_Demo only works with the Insight or DSx skins"] [translate Ok]
+#	}
 }
 
 # Sets up integration points with the DSx skin.
@@ -91,6 +94,15 @@ proc ::plugins::DGUI_Demo::setup_ui_Insight {} {
 	# Add an icon on the bottom-right Insight home page to open the demo page.
 	add_symbol "off" 2460 1240 "\uf581" -size small -has_button 1 \
 		-button_cmd { ::plugins::DGUI_Demo::load_page "A demo plugin for DGUI under Insight" }
+}
+
+# Sets up integration points with the MimojaCafe skin.
+proc ::plugins::DGUI_Demo::setup_ui_MimojaCafe {} {
+	# Add an icon on the top-left MimojaCafe home page to open the demo page.
+	# Icons are fontawesome symbols, in sizes "small", "medium" or "big". You can use the unicode character value,
+	#	or a symbolic name that you have added first with a call to ::plugins::DGUI::define_symbol
+	add_symbol "off" 15 65 "\uf581" -size small -has_button 1 \
+		-button_cmd { ::plugins::DGUI_Demo::load_page "A demo plugin for DGUI under MimojaCafe" }
 }
 
 # This is what client code should use to open/launch the page. 
