@@ -30,8 +30,11 @@ namespace eval ::plugins::DGUI_Demo {
 	# Plugin standard variables
 	variable author "Enrique Bengoechea"
 	variable contact "enri.bengoechea@gmail.com"
-	variable version 1.0
-	variable description "A demo for the 'Describe GUI' (DGUI) plugin."
+	variable version 1.01
+	variable github_repo ebengoechea/de1app_plugin_DGUI_Demo
+	variable name "Describe GUI Demo"
+	variable description "A demo for the 'Describe GUI' (DGUI) plugin.
+Enable and tap the smiley on DSx or Insight home pages. Do not run with other skins."
 
 	# An array to keep references to all widgets used in the page. DGUI procs auto-add to this array. 
 	variable widgets
@@ -50,18 +53,17 @@ namespace eval ::plugins::DGUI_Demo {
 		stars 2
 		show_text_status off
 	}
-	
-	# Let as use, for example, "add_page" instead of the fully qualified "::plugins::DGUI::add_page".
-	namespace import ::plugins::DGUI::*
 }
 
 # Auto-invoked when the plugin is loaded by the extensions system.
 proc ::plugins::DGUI_Demo::main {} {
-	# Ensure the DGUI plugin is enabled
-	if { [lsearch -exact [available_plugins] DGUI] > -1 } {
-		if { ![plugin_enabled DGUI] } { load_plugin DGUI }
+	# Ensure the DGUI plugin is loaded before DGUI_Demo
+	if { [plugins available DGUI] } {
+		plugins load DGUI
 	} else {
-		message_page [translate "The DGUI plugin must be installed for this demo to work"] [translate Ok]
+		info_page [translate "The DGUI plugin must be installed for DGUI_Demo to work"] [translate Ok]
+		plugins disable DGUI_Demo
+		return
 	}
 	
 	# Create the example page
@@ -70,14 +72,19 @@ proc ::plugins::DGUI_Demo::main {} {
 	# Create the UI integration points with DSx or Insight. 
 	if { $::settings(skin) eq "DSx" } {
 		setup_ui_DSx
-	} elseif { $::settings(skin) eq "Insight" } {
-		setup_ui_Insight
 	} elseif { $::settings(skin) eq "MimojaCafe" } {
 		setup_ui_MimojaCafe
+	} else {
+		setup_ui_Insight
 	}
-#	elseif {} {
-#		message_page [translate "DGUI_Demo only works with the Insight or DSx skins"] [translate Ok]
-#	}
+}
+
+proc ::plugins::DGUI_Demo::preload {} {
+	if { [plugins available DGUI] } {
+		plugins preload DGUI		
+		# Let as use, for example, "add_page" instead of the fully qualified "::plugins::DGUI::add_page".
+		namespace import ::plugins::DGUI::*
+	} 
 }
 
 # Sets up integration points with the DSx skin.
